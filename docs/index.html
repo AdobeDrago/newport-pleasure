@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Newport Pleasure — EDS Migration Handoff Playbook</title>
+<style>
+:root{--bg:#fff;--fg:#1c2733;--muted:#5b6b7a;--band:#f3f6f9;--line:#dde4ea;--brand:#0e2b63;--accent:#0a8f6a;--warn:#b86e00;--bad:#b3261e;--code:#0f1b2a;--codefg:#e6edf3}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1720;--fg:#e4eaf0;--muted:#97a6b5;--band:#17212c;--line:#2a3745;--brand:#8fb4ff;--accent:#3ccf9d;--warn:#f0b04a;--bad:#ff8a80}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--brand)}
+.layout{display:flex;max-width:1280px;margin:0 auto}
+nav.toc{position:sticky;top:0;align-self:flex-start;width:260px;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);font-size:14px;flex-shrink:0}
+nav.toc h6{margin:18px 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+nav.toc a{display:block;padding:3px 0;text-decoration:none;color:var(--fg)}
+nav.toc a:hover{color:var(--brand)}
+main{flex:1;min-width:0;padding:40px 48px 80px}
+header.hero{padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:8px}
+h1{font-size:34px;line-height:1.2;margin:0 0 6px;color:var(--brand)}
+.sub{color:var(--muted);margin:0 0 12px}
+h2{font-size:24px;margin:48px 0 12px;padding-top:8px;color:var(--brand);border-top:1px solid var(--line)}
+h3{font-size:18px;margin:28px 0 8px}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--band);border:1px solid var(--line);vertical-align:middle}
+.b-ok{color:var(--accent)}.b-warn{color:var(--warn)}.b-bad{color:var(--bad)}
+table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--band);font-weight:600}
+.tablewrap{overflow-x:auto}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--band);padding:1px 6px;border-radius:4px}
+pre{background:var(--code);color:var(--codefg);padding:14px 16px;border-radius:8px;overflow:auto;font:13px/1.5 ui-monospace,Menlo,monospace}
+pre code{background:none;padding:0;color:inherit}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:12px 0}
+.card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--band)}
+.card h4{margin:0 0 4px;font-size:15px}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+.callout{border-left:4px solid var(--warn);background:var(--band);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.callout.sec{border-color:var(--bad)}
+.callout.info{border-color:var(--brand)}
+.callout strong:first-child{display:block;margin-bottom:2px}
+figure{margin:16px 0}
+figure img{max-width:100%;border:1px solid var(--line);border-radius:8px}
+figcaption{font-size:13px;color:var(--muted);margin-top:4px}
+.uc{border:1px solid var(--line);border-radius:10px;margin:18px 0;overflow:hidden}
+.uc>h3{margin:0;padding:12px 16px;background:var(--band);border-bottom:1px solid var(--line);font-size:17px}
+.uc .body{padding:4px 16px 12px}
+.uc dl{margin:8px 0}
+.uc dt{font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:10px}
+.uc dd{margin:2px 0 0}
+.uc ul{margin:4px 0;padding-left:20px}
+footer{margin-top:60px;color:var(--muted);font-size:13px}
+@media(max-width:860px){.layout{display:block}nav.toc{position:static;width:auto;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:24px 16px 60px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Contents">
+<strong>Newport Pleasure</strong>
+<h6>Overview</h6>
+<a href="#overview">Overview</a><a href="#security">Access &amp; security</a><a href="#references">Key references</a><a href="#scope">Scope &amp; approach</a>
+<h6>Source architecture</h6>
+<a href="#architecture">Architecture</a><a href="#apis">API layer &amp; Swagger</a><a href="#environments">Environments</a>
+<h6>Use cases</h6>
+<a href="#usecases">Use-case index</a><a href="#uc-content">Content &amp; pages</a><a href="#uc-reg">Registration</a><a href="#uc-auth">Login, SSO, MFA</a><a href="#uc-profile">Profile</a><a href="#uc-rewards">Rewards, coupons</a><a href="#uc-ugc">UGC &amp; moderation</a><a href="#uc-games">Games</a><a href="#uc-sgw">Surgeon General Warning</a><a href="#uc-personal">Personalization</a><a href="#uc-cache">Caching</a>
+<h6>Planning</h6>
+<a href="#matrix">Feasibility matrix</a><a href="#risks">Risks &amp; tech debt</a><a href="#decisions">Decisions</a><a href="#next">Next steps</a><a href="#open">Open questions</a>
+<h6>Reference</h6>
+<a href="#glossary">Glossary</a><a href="#screens">Meeting screens</a>
+</nav>
+
+<main>
+<header class="hero">
+<h1>Newport Pleasure — newport-pleasure.com → EDS</h1>
+<p class="sub">Handoff Playbook for the development team · Source: RJRT technical deep-dive, 13 Nov 2026 &nbsp; <span class="badge b-warn">Repo set up · EDS rebuild in progress</span></p>
+</header>
+
+<h2 id="overview">Overview</h2>
+<p>Newport Pleasure is a Reynolds American (RJRT) brand website. Unlike simpler content-led RJRT corporate/brand sites, Newport is the <strong>complex case</strong>: authenticated experiences, age-verified registration, loyalty rewards, coupons, user-generated content (UGC), games and Adobe Target personalization, all backed by a Java middleware tier.</p>
+<p>This document hands over the requirements to the development team building the site on Adobe Edge Delivery Services (EDS). It combines the project set-up with the use cases and architecture walked through with the customer in the technical deep-dive meeting <em>"PBYB – EDS program with Reynolds"</em>.</p>
+<div class="callout info"><strong>The central design rule</strong>An EDS build is <em>not</em> just a page-rendering migration. The middleware API contracts, session/SSO behaviour, caching, remaining AEM servlets and external systems must be <strong>preserved</strong> (or explicitly redesigned) behind the new EDS front end. Do not rebuild transactional back-end logic in EDS.</div>
+
+<h2 id="security">Access &amp; security</h2>
+<div class="callout sec"><strong>This site is secured — access is by IP whitelisting.</strong>RJRT operates in a regulated environment. Production and the lower environments (Dev, QA, Stage) sit behind <strong>Imperva</strong> (CDN, WAF and advanced bot protection). Staging and Swagger access has been shared with Adobe <strong>only for specific, whitelisted static IP addresses</strong>.</div>
+<ul>
+<li>Browsers, scripts, crawlers and headless tools must run from a whitelisted static IP, otherwise requests are blocked by Imperva bot protection.</li>
+<li>Staging access details were shared with Adobe out-of-band. <strong>They are intentionally not recorded in this document</strong> — request them from the Adobe project lead (Atul Jadhav).</li>
+<li>Any additional developer needs their static IP submitted to the Reynolds team (Brad) and whitelisted <em>before</em> hands-on work starts. Confirm the full engineering roster first.</li>
+<li>Do not scrape or automate against production from non-whitelisted networks; use authorized access paths only.</li>
+<li>Production registration requires a <strong>real, eligible US identity</strong> that passes age verification. RJRT does not share production credentials; each engineer needing production testing creates their own verified account.</li>
+</ul>
+
+<h2 id="references">Key references</h2>
+<div class="tablewrap"><table>
+<tr><th>Item</th><th>Value</th></tr>
+<tr><td>Website</td><td>Newport Pleasure</td></tr>
+<tr><td>Production URL</td><td><a href="https://www.newport-pleasure.com/">newport-pleasure.com</a> (secured; IP whitelisted)</td></tr>
+<tr><td>EDS preview</td><td><a href="https://main--newport-pleasure--adobedrago.aem.page/">main--newport-pleasure--adobedrago.aem.page</a></td></tr>
+<tr><td>Status</td><td>Repo set up, EDS rebuild in progress</td></tr>
+<tr><td>GitHub</td><td><a href="https://github.com/AdobeDrago/newport-pleasure">AdobeDrago/newport-pleasure</a></td></tr>
+<tr><td>DA.live</td><td><a href="https://da.live/#/adobedrago/newport-pleasure">da.live/#/adobedrago/newport-pleasure</a></td></tr>
+<tr><td>Staging site</td><td>Shared with Adobe via IP whitelisting (details not recorded here)</td></tr>
+<tr><td>Stage API / Swagger</td><td><code>https://api-stage.raimktg.com/swagger-ui/index.html</code> — Dev, QA and Stage only; <strong>not in production</strong></td></tr>
+<tr><td>Architecture diagram</td><td>Screenshot below; Brad (RJRT) to share the full diagram, possibly with more detail</td></tr>
+</table></div>
+
+<h2 id="scope">Scope &amp; approach</h2>
+<div class="cards">
+<div class="card"><h4>Rebuild in EDS</h4><p>Page templates, content components, navigation, footer, and UI for registration, login, profile, rewards, coupons and games container.</p></div>
+<div class="card"><h4>Reuse as-is</h4><p>Spring Boot middleware APIs, Loyalty Plus / Merkle, Veratad / DCAM age verification, SSO/session DB, SGW service.</p></div>
+<div class="card"><h4>Redesign, don't copy</h4><p>UGC &amp; moderation (come out of AEM), raw-HTML page debt, legacy SGW servlets.</p></div>
+<div class="card"><h4>Do not rebuild</h4><p>Game engines (preserve the hosted iframe contract) and the transactional rewards ledger.</p></div>
+</div>
+<p>The meeting did <strong>not</strong> decide to rebuild Newport wholesale. The requested gate was an Adobe-led technical feasibility assessment, defining which component patterns move to EDS / AI-assisted implementation, which services are reused, which AEM dependencies remain, and which debt areas are redesigned.</p>
+
+<h2 id="architecture">Source architecture</h2>
+<figure><img src="assets/architecture.png" alt="Newport high-level architecture diagram"><figcaption>High-level brand-site architecture shown by RJRT (Brad) in the meeting.</figcaption></figure>
+<div class="tablewrap"><table>
+<tr><th>Layer</th><th>What it does</th></tr>
+<tr><td>Imperva CDN</td><td>Front door: CDN, security, bot protection, IP whitelisting for lower environments.</td></tr>
+<tr><td>Dispatcher / Apache</td><td>Serves largely cached HTML from AEM (Adobe Managed). Author → two Publishers behind it.</td></tr>
+<tr><td>ALB</td><td>Load balancer routing traffic to the middleware.</td></tr>
+<tr><td><code>brandsite-api</code> middleware</td><td>Java Spring Boot services on ECS Fargate. Orchestrates SOA/WebMethods, Loyalty Plus, databases and returns enriched responses. Most UI components talk to this, not to AEM publishers.</td></tr>
+<tr><td>Amazon EventBridge</td><td>Event integration used by the middleware.</td></tr>
+<tr><td>ECOMM zone</td><td>UGC Database, SSO Login DB, SOA WebMethods, ATCDB (Profile, Redemption).</td></tr>
+<tr><td>External services</td><td>Arrowhead (redemption API), Brightcove (video API), Loyalty Plus (Merkle).</td></tr>
+<tr><td>Remaining AEM servlets</td><td>B2B/content retrieval from JCR, authoring helpers, games config, page redirect, sitemap, Surgeon General Warning logic.</td></tr>
+</table></div>
+
+<h2 id="apis">API layer &amp; Swagger</h2>
+<figure><img src="assets/swagger-apis.png" alt="Reynolds Brand Site API Swagger definitions list"><figcaption>Swagger "Reynolds Brand Site API" (Stage, release/release-61, build 2026-11-12) with its API groups.</figcaption></figure>
+<p>The middleware APIs are documented in Swagger and called from the front end through a JavaScript API library. Both authenticated and anonymous endpoints exist.</p>
+<div class="tablewrap"><table>
+<tr><th>API group</th><th>Used by</th></tr>
+<tr><td>Registration, Login &amp; Session, Mobile MFA, Forgot/Reset User &amp; Password</td><td>Registration, sign-in, MFA, account recovery</td></tr>
+<tr><td>Profile Management, Moderated Preferred Name</td><td>Profile</td></tr>
+<tr><td>Rewards, Offer &amp; Savings, Promotion, Product, Trade Pathway (Rewards)</td><td>Rewards catalog, coupons, offers, promotions</td></tr>
+<tr><td>Games, Badges, Bracket / Bracket Mock, Chat</td><td>Games and engagement</td></tr>
+<tr><td>User Generated Content (+ Action Display, Action Tracker, Grizzly, HVB, Leaderboard), Moderation, Survey</td><td>UGC, polls/surveys, leaderboards, moderation</td></tr>
+<tr><td>Store Location, Salesforce External, MYVUSE External, Digital Partner Platform, Admin, Common</td><td>Store locator and integrations</td></tr>
+</table></div>
+<p><strong>Dev action:</strong> build an endpoint inventory and map every EDS block/component to the APIs it consumes.</p>
+
+<h2 id="environments">Environments</h2>
+<div class="tablewrap"><table>
+<tr><th>Environment</th><th>Notes</th></tr>
+<tr><td>Dev / QA</td><td>Swagger available; IP whitelisted; test-oriented registration/DCAM; MFA token shown on screen.</td></tr>
+<tr><td>Stage</td><td>Very close to production content; reflects the <em>upcoming</em> release (about a 2-week cycle), so it may contain features not yet live. Swagger shows branch/build/revision — record the release under test.</td></tr>
+<tr><td>Production</td><td>No Swagger. Real MFA delivery. Real age verification. No shared credentials.</td></tr>
+</table></div>
+<p>Raw HTML in AEM pages (more than a dozen usages believed) can make environments behave differently (e.g. CSS differences that don't show in QA).</p>
+
+<h2 id="usecases">Use-case index</h2>
+<div class="tablewrap"><table>
+<tr><th>#</th><th>Use case</th><th>EDS approach</th><th>Complexity</th></tr>
+<tr><td>1</td><td><a href="#uc-content">Content pages &amp; raw HTML</a></td><td>Rebuild as blocks; classify raw HTML</td><td><span class="badge">Medium</span></td></tr>
+<tr><td>2</td><td><a href="#uc-reg">Registration &amp; age verification</a></td><td>New UI, existing middleware + Veratad/DCAM</td><td><span class="badge b-bad">High</span></td></tr>
+<tr><td>3</td><td><a href="#uc-auth">Login, session, SSO, MFA</a></td><td>Preserve session contract</td><td><span class="badge b-bad">High</span></td></tr>
+<tr><td>4</td><td><a href="#uc-profile">User profile</a></td><td>Central profile state</td><td><span class="badge b-warn">Med-High</span></td></tr>
+<tr><td>5</td><td><a href="#uc-rewards">Rewards, catalog, offers, coupons</a></td><td>UI on existing APIs</td><td><span class="badge b-bad">High</span></td></tr>
+<tr><td>6</td><td><a href="#uc-ugc">UGC &amp; moderation</a></td><td>Decouple from AEM</td><td><span class="badge b-bad">High</span></td></tr>
+<tr><td>7</td><td><a href="#uc-games">Games</a></td><td>Preserve iframe contract</td><td><span class="badge b-warn">Med-High</span></td></tr>
+<tr><td>8</td><td><a href="#uc-sgw">Surgeon General Warning</a></td><td>Use middleware SGW service</td><td><span class="badge b-warn">Medium</span></td></tr>
+<tr><td>9</td><td><a href="#uc-personal">Target / AEP / Analytics</a></td><td>Parity of activities and tagging</td><td><span class="badge b-warn">Medium</span></td></tr>
+<tr><td>10</td><td><a href="#uc-cache">Service-worker caching</a></td><td>Cache-equivalence strategy</td><td><span class="badge b-warn">Medium</span></td></tr>
+<tr><td>11</td><td>Sitemap &amp; secure-page inventory</td><td>Combine crawl, sitemap, authenticated nav</td><td><span class="badge">Low-Med</span></td></tr>
+</table></div>
+
+<h2 id="uc-content">UC1 · Content pages, raw HTML, sitemap</h2>
+<div class="uc"><h3>Content &amp; page structure</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd>AEM pages cached by dispatcher. More than a dozen raw-HTML usages cause environment-specific styling/behaviour differences (a recent games issue was one example). A page-redirect servlet and a sitemap servlet exist in AEM.</dd>
+<dt>Requirements</dt><dd><ul><li>Inventory all raw HTML; classify as content, behaviour, integration or technical debt. Do not blindly migrate it.</li><li>Do not use the sitemap alone as the page inventory: <strong>secured/authenticated pages were missing</strong> from it (RJRT to investigate). Combine crawl + sitemap + authenticated navigation + AEM content structure + template inventory.</li><li>Replace redirect/sitemap servlets with EDS redirects and sitemap generation.</li></ul></dd>
+<dt>Acceptance</dt><dd>Complete page inventory including protected pages; visual parity to source per section.</dd>
+</dl></div></div>
+
+<h2 id="uc-reg">UC2 · Registration &amp; age verification</h2>
+<div class="uc"><h3>Registration</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd>Middleware Registration API; parts use form-data requests. <strong>Veratad / DCAM</strong> performs age verification. Lower environments include test-friendly DCAM behaviour. Production requires a real eligible US identity.</dd>
+<dt>Requirements</dt><dd><ul><li>Build the EDS registration UI against the existing Registration API; keep request formats identical.</li><li>Exercise the full path: validation errors, age-verification failures, success.</li><li>Test in lower environments; production needs developer-owned verified accounts.</li></ul></dd>
+<dt>Acceptance</dt><dd>New account can be created end-to-end on Stage via EDS; error paths match existing behaviour.</dd>
+</dl></div></div>
+
+<h2 id="uc-auth">UC3 · Login, session, SSO &amp; MFA</h2>
+<div class="uc"><h3>Authentication</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd><ul><li>Session cookie holds a <em>key</em> (not the user's RJ identifier); middleware validates it against the SSO/session database.</li><li><code>secure.js</code> / <code>secureAuto.js</code>-style client logic protects pages and supports automatic login. Session period discussed: <strong>90 days</strong>.</li><li>Cross-brand SSO follows a risk continuum, so movement between brands is <em>not</em> symmetric.</li><li>Authorization state also gates rewards access.</li><li><strong>MFA:</strong> production sends the code to the user; lower environments render the token on screen for testing.</li></ul></dd>
+<dt>Requirements</dt><dd><ul><li>Preserve the middleware session contract, secure-route decisions and cross-brand rules.</li><li>Write separate test cases for simulated (lower env) and real (production) MFA.</li><li>Secure pages must be protected client-side as today (EDS pages are static/cached).</li></ul></dd>
+<dt>Acceptance</dt><dd>Login, auto-login, logout, MFA, protected-route redirect and cross-brand SSO behave as in current site.</dd>
+</dl></div></div>
+
+<h2 id="uc-profile">UC4 · User profile</h2>
+<div class="uc"><h3>Profile</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd>Profile comes from middleware, is a relatively heavy call, is cached in the browser, and feeds rewards eligibility and personalization.</dd>
+<dt>Requirements</dt><dd>Centralise profile retrieval and state in one shared module; components must not each call the profile API. Invalidate on logout and on profile update.</dd>
+</dl></div></div>
+
+<h2 id="uc-rewards">UC5 · Rewards catalog, offers &amp; coupons</h2>
+<div class="uc"><h3>Loyalty Plus / Merkle</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd><ul><li>Rewards run on Loyalty Plus / Merkle through middleware, with a catalog/service configuration <strong>per brand</strong>.</li><li>Catalog items, details, points/ledger, earn/burn and denomination selection come from those services. UI depends on whether the user is enrolled.</li><li>No duplicate points ledger in AEM. Presentation content, images, terms and disclosures can still be AEM-authored.</li><li>Offers/coupons (e.g. birthday bonuses, poll-earned offers) are heavier calls and are cached; they depend on auth/profile context.</li></ul></dd>
+<dt>Requirements</dt><dd><ul><li>Separate authored presentation content (EDS/DA) from transactional data (APIs).</li><li>Treat rewards, catalog and offers as distinct surfaces; validate cache and invalidation.</li><li>Cover the activity ledger, catalog item detail and reward denomination selection.</li></ul></dd>
+</dl></div></div>
+
+<h2 id="uc-ugc">UC6 · UGC &amp; moderation</h2>
+<div class="uc"><h3>User generated content</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd>UGC lives in a UGC database; a moderation tool reads it; polls/surveys and game leaderboards also use it. Historic slow queries and a problematic data model. RJRT (Chris) was explicit: <strong>UGC should come out of AEM</strong> and is a major pain point.</dd>
+<dt>Requirements</dt><dd><ul><li>Do not recreate AEM moderation inside EDS. Treat as a separate future-state decision.</li><li>Validate that content written by new EDS components via the same backend still appears in existing moderation.</li><li>Validate database/API performance.</li></ul></dd>
+</dl></div></div>
+
+<h2 id="uc-games">UC7 · Games</h2>
+<div class="uc"><h3>Games</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd>Game UI is embedded via <strong>iframe</strong> with assets served from CloudFront; a separate config controls rendering (colours, sound, etc.); an AEM component places the iframe and AEM servlets handle authoring/config. Gameplay uses middleware APIs, leaderboards use the UGC DB, and play can award rewards points.</dd>
+<dt>Requirements</dt><dd>Do <strong>not</strong> regenerate game engines. Build an EDS container block that preserves the iframe/config contract, and validate security, config and API integration. Decide where game config moves once the AEM servlet is gone.</dd>
+</dl></div></div>
+
+<h2 id="uc-sgw">UC8 · Surgeon General Warning (SGW)</h2>
+<div class="uc"><h3>Warnings</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd>Warnings vary by date/quarter, product/style and brand; assets are DAM images plus alt text/trigger text. A middleware service can return the correct warning dynamically; legacy servlet logic also exists.</dd>
+<dt>Requirements</dt><dd>All new EDS warning components consume the <strong>existing SGW middleware service</strong> (as Brad recommended) rather than reimplementing servlet logic. Confirm where the warning images are hosted post-migration.</dd>
+</dl></div></div>
+
+<h2 id="uc-personal">UC9 · Personalization &amp; measurement</h2>
+<div class="uc"><h3>Adobe Target, AEP, Analytics, Launch</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd>Adobe Target runs location/profile-driven experiences, sweepstakes and coupons; Campaign, AEP and Analytics collect interactions; Adobe Launch is on the site. RJRT has already shared details of the Target activities.</dd>
+<dt>Requirements</dt><dd>Inventory the Target activities and audiences; carry over Launch tagging; verify AEP/Analytics data for the prototype journeys.</dd>
+</dl></div></div>
+
+<h2 id="uc-cache">UC10 · Service-worker &amp; browser caching</h2>
+<div class="uc"><h3>Caching</h3><div class="body"><dl>
+<dt>Current behaviour</dt><dd>A service worker caches heavy calls (profile, offers) and some static resources. Cache config is per brand (URL patterns, HTTP methods) with lifecycle rules, e.g. login-state caches are flushed on logout.</dd>
+<dt>Requirements</dt><dd>Define a cache-equivalence strategy. Functional success is not enough if it multiplies middleware traffic or serves stale auth/profile state.</dd>
+</dl></div></div>
+
+<h2 id="matrix">Feasibility matrix</h2>
+<div class="tablewrap"><table>
+<tr><th>Capability</th><th>Current implementation</th><th>Key POC question</th></tr>
+<tr><td>Content/pages</td><td>AEM + dispatcher cached HTML</td><td>Can EDS reproduce patterns without carrying raw-HTML debt?</td></tr>
+<tr><td>APIs</td><td>Spring Boot middleware + Swagger</td><td>Can EDS consume existing contracts directly and securely?</td></tr>
+<tr><td>Registration</td><td>Middleware + Veratad/DCAM</td><td>Can age verification be retained unchanged behind an EDS UI?</td></tr>
+<tr><td>Login/SSO/MFA</td><td>Middleware/session DB + secure JS</td><td>Can secure routes and cross-brand SSO be preserved?</td></tr>
+<tr><td>Profile</td><td>Middleware, cached client-side</td><td>What shared state/cache avoids repeated heavy calls?</td></tr>
+<tr><td>Rewards</td><td>Loyalty Plus/Merkle via middleware</td><td>Can EDS reuse transaction APIs while separating presentation content?</td></tr>
+<tr><td>Coupons/offers</td><td>Middleware + cached offers</td><td>Are cache/invalidation and eligibility rules preserved?</td></tr>
+<tr><td>UGC/moderation</td><td>UGC DB + moderation tool</td><td>What should be decoupled rather than migrated as-is?</td></tr>
+<tr><td>Games</td><td>CloudFront iframe + config + APIs</td><td>Can EDS preserve hosted game integration?</td></tr>
+<tr><td>SGW</td><td>Middleware service + DAM content</td><td>Can all warning components standardise on the service?</td></tr>
+<tr><td>Target/AEP/Analytics</td><td>Adobe personalization/data stack</td><td>Can activities and measurement keep parity?</td></tr>
+<tr><td>Sitemap</td><td>Sitemap servlet, incomplete secure coverage</td><td>What gives complete protected-page coverage?</td></tr>
+</table></div>
+
+<h2 id="risks">Risks &amp; technical debt</h2>
+<div class="tablewrap"><table>
+<tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr>
+<tr><td>IP whitelisting / bot protection</td><td>Blocked tooling and developers</td><td>Submit static IPs early; use whitelisted machines only</td></tr>
+<tr><td>Remaining AEM servlets</td><td>Hidden dependencies break EDS</td><td>Servlet dependency list: call existing service, move to middleware, or keep AEM temporarily</td></tr>
+<tr><td>Stage ahead of production</td><td>Testing against unreleased behaviour</td><td>Record release/branch under test</td></tr>
+<tr><td>UGC DB performance and model</td><td>Slow pages, moderation gaps</td><td>Separate future-state decision</td></tr>
+<tr><td>Raw HTML differences</td><td>Env-specific CSS bugs</td><td>Inventory and classify</td></tr>
+<tr><td>Incomplete sitemap</td><td>Missing secure pages</td><td>Multi-source inventory</td></tr>
+<tr><td>Test vs production behaviour (MFA, DCAM)</td><td>False confidence</td><td>Separate test cases per environment</td></tr>
+</table></div>
+
+<h2 id="decisions">Decisions &amp; assumptions</h2>
+<ul>
+<li>Next gate is a technical feasibility assessment — <strong>not</strong> an immediate full rebuild.</li>
+<li>Reuse existing middleware APIs; EDS is a front-end replacement.</li>
+<li>UGC/moderation is redesigned, not copied.</li>
+<li>Games stay as hosted iframe content.</li>
+<li>Prefer asynchronous targeted questions to a standing meeting; the customer declined a regular cadence until the assessment is done.</li>
+</ul>
+
+<h2 id="next">Next steps</h2>
+<h3>Adobe / development team</h3>
+<ol>
+<li>Confirm the engineering roster and send static IPs for whitelisting.</li>
+<li>Inventory endpoints, servlets, raw HTML, Target activities and pages (including secure pages).</li>
+<li>Map each Newport function to an EDS pattern; build the shared auth/profile/cache modules.</li>
+<li>Test registration, MFA, profile, rewards, coupons and session on Stage.</li>
+<li>Return a feasibility recommendation and POC scope to RJRT.</li>
+</ol>
+<h3>RJRT / Reynolds</h3>
+<ol>
+<li>Brad to share the architecture diagram (with more detail if possible).</li>
+<li>Whitelist additional Adobe static IPs as supplied.</li>
+<li>Investigate the sitemap / secure-page discrepancy.</li>
+<li>Answer targeted technical questions as they arise.</li>
+</ol>
+
+<h2 id="open">Open questions</h2>
+<ul>
+<li>Where will game configuration and SGW images live once AEM authoring is no longer the source?</li>
+<li>Which AEM servlets must remain, and for how long?</li>
+<li>How do EDS secure pages interoperate with <code>secureAuto.js</code> and the service worker?</li>
+<li>What is the target for UGC/moderation outside AEM?</li>
+<li>Which Target activities must run in the prototype scope?</li>
+</ul>
+
+<h2 id="glossary">Glossary</h2>
+<div class="tablewrap"><table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>EDS</td><td>Adobe AEM Edge Delivery Services</td></tr>
+<tr><td>DA.live</td><td>Document Authoring for EDS</td></tr>
+<tr><td>Imperva</td><td>CDN / WAF / bot protection in front of RJRT sites</td></tr>
+<tr><td>Middleware / brandsite-api</td><td>Spring Boot APIs on ECS Fargate</td></tr>
+<tr><td>Loyalty Plus / Merkle</td><td>Rewards platform</td></tr>
+<tr><td>Veratad / DCAM</td><td>Age-verification services</td></tr>
+<tr><td>SGW</td><td>Surgeon General Warning</td></tr>
+<tr><td>UGC</td><td>User-generated content</td></tr>
+<tr><td>SSO</td><td>Single sign-on across brands</td></tr>
+</table></div>
+
+<h2 id="screens">Meeting screens</h2>
+<p>The meeting record exposes shared-screen identifiers rather than image files. Two were captured here (architecture and Swagger). Others can be located in the source recording:</p>
+<div class="tablewrap"><table>
+<tr><th>Topic</th><th>Shared screen IDs</th></tr>
+<tr><td>Architecture / Imperva</td><td>1–3, 9, 22</td></tr>
+<tr><td>Swagger / API detail</td><td>4–7, 13</td></tr>
+<tr><td>Service worker / cache code</td><td>8, 16, 18</td></tr>
+<tr><td>Moderation, servlets, code</td><td>10–12, 15</td></tr>
+<tr><td>Stage login / registration / MFA / profile</td><td>14, 17, 19, 20</td></tr>
+<tr><td>Rewards, coupons, ledger</td><td>21, 23, 24, 26–28</td></tr>
+<tr><td>Representative Stage experience</td><td>25</td></tr>
+</table></div>
+
+<footer>Updated November 2026 · Source: Microsoft Teams transcript, PBYB – EDS program with Reynolds (technical deep dive), 13 Nov 2026. Credentials and whitelisted IPs are deliberately omitted.</footer>
+</main>
+</div>
+</body>
+</html>
